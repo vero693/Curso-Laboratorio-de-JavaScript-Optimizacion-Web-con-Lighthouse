@@ -17,8 +17,12 @@
         rewind: false,
         mode: "gallery",
         controlsText: [
-          '<i class="fas fa-angle-left" aria-hidden="true"></i>',
-          '<i class="fas fa-angle-right" aria-hidden="true"></i>',
+          `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" width="16" height="16">
+            <path d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"/>
+          </svg>`,
+          `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" width="16" height="16">
+            <path d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"/>
+          </svg>`,
         ],
         nav: false,
       });
@@ -36,12 +40,35 @@
         App.calcTimeAgo();
       });
     },
+    timeAgo(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const seconds = Math.floor((now - date) / 1000);
+      const intervals = [
+        { label: "year", seconds: 31536000 },
+        { label: "month", seconds: 2592000 },
+        { label: "day", seconds: 86400 },
+        { label: "hour", seconds: 3600 },
+        { label: "minute", seconds: 60 }
+      ];
+
+      for (const interval of intervals) {
+        const count = Math.floor(seconds / interval.seconds);
+
+        if (count >= 1) {
+          return `${count} ${interval.label}${count > 1 ? "s" : ""} ago`;
+        }
+      }
+
+      return "Just now";
+    },
     calcTimeAgo: () => {
       const items = App.$.getTimeAgoItems();
+
       if (items.length) {
-        for (var i = 0; i < items.length; i++) {
+        for (let i = 0; i < items.length; i++) {
           const date = items[i].getAttribute("data-date");
-          items[i].innerHTML = moment(date.split("-")).fromNow();
+          items[i].textContent = timeAgo(date);
         }
       }
     },

@@ -17,15 +17,24 @@
         rewind: false,
         mode: "gallery",
         controlsText: [
-          '<i class="fas fa-angle-left"></i>',
-          '<i class="fas fa-angle-right"></i>',
+          '<i class="fas fa-angle-left" aria-hidden="true"></i>',
+          '<i class="fas fa-angle-right" aria-hidden="true"></i>',
         ],
         nav: false,
       });
+      setTimeout(() => {
+        document
+          .querySelector('[data-controls="prev"]')
+          ?.setAttribute("aria-label", "Testimonio anterior");
+
+        document
+          .querySelector('[data-controls="next"]')
+          ?.setAttribute("aria-label", "Siguiente testimonio");
+      }, 100);
+
       slider.events.on("transitionEnd", () => {
         App.calcTimeAgo();
       });
-      App.calcTimeAgo();
     },
     calcTimeAgo: () => {
       const items = App.$.getTimeAgoItems();
